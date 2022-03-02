@@ -1,5 +1,6 @@
 import './style.css'
 import * as THREE from 'three'
+import { ARButton } from 'three/examples/jsm/webxr/ARButton.js'
 
 // // Canvas
 // const canvas = document.querySelector('canvas.webgl')
