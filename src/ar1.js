@@ -45,6 +45,27 @@ import { ARButton } from 'three/examples/jsm/webxr/ARButton.js'
  })
  renderer.setPixelRatio(window.devicePixelRatio)
  renderer.setSize(sizes.width, sizes.height)
+ 
+/**
+ * AR BUTTON
+ */
+ document.body.appendChild( ARButton.createButton( renderer ) );
+ const controller = renderer.xr.getController( 0 );
+
+ function onSelect() {
+ 
+     var material = new THREE.MeshPhongMaterial( { color: 0xffffff * Math.random() } );
+     var mesh = new THREE.Mesh( geometry, material );
+     mesh.position.set( 0, 0, - 0.3 ).applyMatrix4( controller.matrixWorld );
+     mesh.quaternion.setFromRotationMatrix( controller.matrixWorld );
+     scene.add( mesh );
+
+    //  console.log('AR selection');
+ 
+ }
+ 
+ controller.addEventListener( 'select', onSelect );
+ scene.add( controller );
 
  /**
   * Loop
