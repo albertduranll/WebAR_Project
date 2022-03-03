@@ -6,7 +6,7 @@ const path = require('path')
 module.exports = {
     entry: {
         index: path.resolve(__dirname, '../src/script.js'),
-        ar1: path.resolve(__dirname, '../src/ar1.js'), 
+        simpleObjPlacement: path.resolve(__dirname, '../src/simpleObjPlacement.js'), 
     },
     output:
     {
@@ -29,9 +29,9 @@ module.exports = {
             minify: true
         }),
         new HtmlWebpackPlugin({
-            filename: 'ar1.html',
-            template: path.resolve(__dirname, '../src/ar1.html'),
-            chunks: ['ar1'],
+            filename: 'simpleObjPlacement.html',
+            template: path.resolve(__dirname, '../src/simpleObjPlacement.html'),
+            chunks: ['simpleObjPlacement'],
             minify: true
         }),
         new MiniCSSExtractPlugin()
