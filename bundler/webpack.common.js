@@ -7,6 +7,7 @@ module.exports = {
     entry: {
         index: path.resolve(__dirname, '../src/script.js'),
         simpleObjPlacement: path.resolve(__dirname, '../src/simpleObjPlacement.js'), 
+        advancedObjPlacement: path.resolve(__dirname, '../src/advancedObjPlacement.js'), 
         prototype: path.resolve(__dirname, '../src/prototype.js'),
     },
     output:
@@ -33,6 +34,12 @@ module.exports = {
             filename: 'simpleObjPlacement.html',
             template: path.resolve(__dirname, '../src/simpleObjPlacement.html'),
             chunks: ['simpleObjPlacement'],
+            minify: true
+        }),
+        new HtmlWebpackPlugin({
+            filename: 'advancedObjPlacement.html',
+            template: path.resolve(__dirname, '../src/advancedObjPlacement.html'),
+            chunks: ['advancedObjPlacement'],
             minify: true
         }),
         new HtmlWebpackPlugin({
@@ -93,6 +100,16 @@ module.exports = {
                 generator:
                 {
                     filename: 'assets/fonts/[hash][ext]'
+                }
+            },
+
+            // Shaders
+            {
+                test: /\.(glsl|vs|fs|vert|frag)$/,
+                type: 'asset/source',
+                generator:
+                {
+                    filename: 'assets/images/[hash][ext]'
                 }
             }
         ]
