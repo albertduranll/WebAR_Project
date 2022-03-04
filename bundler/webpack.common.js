@@ -7,6 +7,7 @@ module.exports = {
     entry: {
         index: path.resolve(__dirname, '../src/script.js'),
         simpleObjPlacement: path.resolve(__dirname, '../src/simpleObjPlacement.js'), 
+        prototype: path.resolve(__dirname, '../src/prototype.js'),
     },
     output:
     {
@@ -32,6 +33,12 @@ module.exports = {
             filename: 'simpleObjPlacement.html',
             template: path.resolve(__dirname, '../src/simpleObjPlacement.html'),
             chunks: ['simpleObjPlacement'],
+            minify: true
+        }),
+        new HtmlWebpackPlugin({
+            filename: 'prototype.html',
+            template: path.resolve(__dirname, '../src/prototype.html'),
+            chunks: ['prototype'],
             minify: true
         }),
         new MiniCSSExtractPlugin()

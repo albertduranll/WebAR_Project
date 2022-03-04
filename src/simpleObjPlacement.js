@@ -12,6 +12,7 @@ animate();
 
 function init() {
 
+    //Creamos elemento div en el HTML
     container = document.createElement( 'div' );
     document.body.appendChild( container );
 

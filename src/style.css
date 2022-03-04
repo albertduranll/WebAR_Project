@@ -7,7 +7,7 @@
 body,
 html
 {
-    overflow: hidden;
+    /* overflow:hidden; */
 }
 
 .webgl
@@ -20,3 +20,69 @@ html
     background: #000000;
     z-index: -1;
 }
+
+/*   PROTOTYPE SCENE   */
+h1{
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+}
+h2{
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+}
+p{
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+}
+a{
+    color: aliceblue;
+    /* text-decoration: none; */
+}
+
+.mainContent{
+    display: flex;
+    align-items: center;
+    height: 100vh;
+    position: relative;
+    color: #ffeded;
+    text-transform: uppercase;
+    padding-left: 10%;
+    padding-right: 10%;
+    text-align: center;
+    justify-content:center;
+}
+
+.title{
+    text-align: center;
+    color: antiquewhite;
+    font-size: 5.5em;
+    /* padding-bottom: 10%; */
+}
+
+.autor{
+    color:white;
+    text-align: right;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin: 3%;
+}
+
+
+/* SCROLL BASED ANIM */
+.section
+{
+    display: flex;
+    align-items: center;
+    height: 100vh;
+    position: relative;
+    color: #ffeded;
+    text-transform: uppercase;
+    font-size: 3em;
+    padding-left: 10%;
+    padding-right: 10%;
+    text-align: center;
+    justify-content:center;
+}
+
+/* section:nth-child(odd)
+{
+    justify-content:center;
+} */
