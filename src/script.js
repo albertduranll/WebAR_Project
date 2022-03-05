@@ -1,7 +1,7 @@
 import './style.css'
 import * as THREE from 'three'
-import { ARButton } from 'three/examples/jsm/webxr/ARButton.js'
-
+import testVertexShader from './shaders/shader1/vertex.glsl'
+import testFragmentShader from './shaders/shader1/fragment.glsl'
 
 /**
  * Sizes
@@ -9,7 +9,7 @@ import { ARButton } from 'three/examples/jsm/webxr/ARButton.js'
 const sizes = {}
 sizes.width = window.innerWidth
 sizes.height = window.innerHeight
- 
+
 window.addEventListener('resize', () =>
 {
     // Save sizes
@@ -23,19 +23,36 @@ window.addEventListener('resize', () =>
     // Update renderer
     renderer.setSize(sizes.width, sizes.height)
 })
- 
+
 /**
- * Environnements
+ * Scene
  */
-// Scene
 const scene = new THREE.Scene()
 
-// Objects
+/**
+ * Objects
+ */
 const objectsDistance = 7
- 
-const cube = new THREE.Mesh(new THREE.SphereBufferGeometry(1.5,50,50, 1,100), new THREE.MeshNormalMaterial())
-scene.add(cube)
 
+
+//--------SHADERS---------//
+shaderLoader()
+var meshWithShader;
+function shaderLoader(){
+
+    //MESH
+    const geometry = new THREE.PlaneBufferGeometry(1, 1, 32, 32) 
+    // const geometry = new THREE.SphereBufferGeometry(6, 32, 32)
+    const material = new THREE.ShaderMaterial({
+        vertexShader: testVertexShader,
+        fragmentShader: testFragmentShader,
+        side: THREE.DoubleSide
+    })
+    const mesh = new THREE.Mesh(geometry,material)
+    mesh.scale.set(10, 10, 10)
+    meshWithShader = mesh;
+    scene.add(mesh)
+}
 
 /**
  * Camera
@@ -47,9 +64,9 @@ scene.add(cameraGroup)
 
 // Base camera
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
-camera.position.z = 3
+camera.position.z = 10
 cameraGroup.add(camera)
- 
+
 
 // Renderer
 const renderer = new THREE.WebGLRenderer({
@@ -91,26 +108,14 @@ window.addEventListener('mousemove', (event) =>
 /**
  * Loop
  */
-const clock = new THREE.Clock()
-let previousTime = 0
 
 const loop = () =>
-{
-    const elapsedTime = clock.getElapsedTime()
-    const deltaTime = elapsedTime - previousTime
-    previousTime = elapsedTime
-
+{ 
     // Animate camera
-    camera.position.y = - scrollY / sizes.height * objectsDistance
-
-    //Efecto parallax
-    const parallaxX = cursor.x * 0.5
-    const parallaxY = - cursor.y * 0.5
-    cameraGroup.position.x += (parallaxX - cameraGroup.position.x) * 2 * deltaTime
-    cameraGroup.position.y += (parallaxY - cameraGroup.position.y) * 2 * deltaTime
+    // camera.position.y = - scrollY / sizes.height * objectsDistance
 
     // Update
-    cube.rotation.y += 0.01
+    // meshWithShader.rotation.y += 0.003
 
     // Render
     renderer.render(scene, camera)

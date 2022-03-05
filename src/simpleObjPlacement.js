@@ -38,7 +38,7 @@ function init() {
 
     //
 
-    var geometry = new THREE.CylinderBufferGeometry( 0, 0.05, 0.2, 32 ).rotateX( Math.PI / 2 );
+    var geometry = new THREE.SphereBufferGeometry( 0.05, 32, 32).rotateX( Math.PI / 2 );
 
     function onSelect() {
 
