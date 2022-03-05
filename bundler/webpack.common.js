@@ -6,9 +6,9 @@ const path = require('path')
 module.exports = {
     entry: {
         index: path.resolve(__dirname, '../src/script.js'),
-        simpleObjPlacement: path.resolve(__dirname, '../src/simpleObjPlacement.js'), 
-        advancedObjPlacement: path.resolve(__dirname, '../src/advancedObjPlacement.js'), 
-        prototype: path.resolve(__dirname, '../src/prototype.js'),
+        simpleObjPlacement: path.resolve(__dirname, '../src/1-simpleObjPlacement/simpleObjPlacement.js'), 
+        advancedObjPlacement: path.resolve(__dirname, '../src/2-advancedObjPlacement/advancedObjPlacement.js'), 
+        prototype: path.resolve(__dirname, '../src/0-prototypes/prototype.js'),
     },
     output:
     {
@@ -32,19 +32,19 @@ module.exports = {
         }),
         new HtmlWebpackPlugin({
             filename: 'simpleObjPlacement.html',
-            template: path.resolve(__dirname, '../src/simpleObjPlacement.html'),
+            template: path.resolve(__dirname, '../src/1-simpleObjPlacement/simpleObjPlacement.html'),
             chunks: ['simpleObjPlacement'],
             minify: true
         }),
         new HtmlWebpackPlugin({
             filename: 'advancedObjPlacement.html',
-            template: path.resolve(__dirname, '../src/advancedObjPlacement.html'),
+            template: path.resolve(__dirname, '../src/2-advancedObjPlacement/advancedObjPlacement.html'),
             chunks: ['advancedObjPlacement'],
             minify: true
         }),
         new HtmlWebpackPlugin({
             filename: 'prototype.html',
-            template: path.resolve(__dirname, '../src/prototype.html'),
+            template: path.resolve(__dirname, '../src/0-prototypes/prototype.html'),
             chunks: ['prototype'],
             minify: true
         }),

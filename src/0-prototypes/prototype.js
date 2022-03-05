@@ -1,8 +1,8 @@
-import './style.css'
+import '../style.css'
 import * as THREE from 'three'
 import { ARButton } from 'three/examples/jsm/webxr/ARButton.js'
-import testVertexShader from './shaders/shader1/vertex.glsl'
-import testFragmentShader from './shaders/shader1/fragment.glsl'
+import testVertexShader from '../shaders/shader1/vertex.glsl'
+import testFragmentShader from '../shaders/shader1/fragment.glsl'
 
 /**
  * Sizes

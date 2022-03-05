@@ -1,7 +1,7 @@
-import './style.css'
+import '../style.css'
 import * as THREE from 'three'
 import { ARButton } from 'three/examples/jsm/webxr/ARButton.js'
-import { ControllerGestures } from './ControllerGestures.js';
+import { ControllerGestures } from '../utils/ControllerGestures.js';
 
 
 const container = document.createElement( 'div' );
