@@ -43,7 +43,7 @@ function init() {
     /* ---------------------------------------------------------------------------------- */
 
     //Geometry
-    var geometry = new THREE.SphereBufferGeometry( 0.05, 32, 32).rotateX( Math.PI / 2 );
+    var geometry = new THREE.OctahedronBufferGeometry( 10, 2 );
 
     /**
      * Función para controlar lo que sucede al pulsar el botón.
@@ -51,7 +51,7 @@ function init() {
     function onSelect() {
 
         //Material
-        var material = new THREE.MeshPhongMaterial( { color: 0xffffff * Math.random() } );
+        var material = new THREE.MeshNormalMaterial();
         
         //Mesh
         var mesh = new THREE.Mesh( geometry, material );
