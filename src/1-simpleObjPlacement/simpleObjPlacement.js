@@ -43,7 +43,7 @@ function init() {
     /* ---------------------------------------------------------------------------------- */
 
     //Geometry
-    var geometry = new THREE.OctahedronBufferGeometry( 10, 2 );
+    var geometry = new THREE.OctahedronBufferGeometry( 0.08, 2 ).rotateX( - Math.PI / 2 );
 
     /**
      * Función para controlar lo que sucede al pulsar el botón.
@@ -51,13 +51,16 @@ function init() {
     function onSelect() {
 
         //Material
-        var material = new THREE.MeshNormalMaterial();
+        var material = new THREE.MeshNormalMaterial({
+            flatShading: true
+        });
         
         //Mesh
         var mesh = new THREE.Mesh( geometry, material );
         mesh.position.set( 0, 0, - 0.3 ).applyMatrix4( controller.matrixWorld );
         mesh.quaternion.setFromRotationMatrix( controller.matrixWorld );
         scene.add( mesh );
+        console.log(mesh)
 
     }
 
