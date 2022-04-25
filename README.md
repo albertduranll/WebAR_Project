@@ -1,6 +1,6 @@
 # WebAR Experiments
 
-> This is a final project made for me as a student of Multiplatform Applications Development at Florida Universitària. The purpose of this project is to **experiment with Augmented Reality on the web**.
+> This is a final project made by me as a student of Multiplatform Applications Development at Florida Universitària. The purpose of this project is to **experiment with Augmented Reality on the web**.
 
 ## How to install: 
  
