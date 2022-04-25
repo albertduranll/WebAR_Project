@@ -111,6 +111,16 @@ module.exports = {
                 {
                     filename: 'assets/images/[hash][ext]'
                 }
+            },
+
+            //GLTF / GLB
+            {
+                test: /\.(glb|gltf)$/i,
+                loader: 'file-loader',
+                options: {
+                    publicPath: './',
+                    name: '[name].[ext]'
+                },
             }
         ]
     }
