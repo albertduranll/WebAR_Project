@@ -8,6 +8,7 @@ module.exports = {
         index: path.resolve(__dirname, '../src/script.js'),
         simpleObjPlacement: path.resolve(__dirname, '../src/1-simpleObjPlacement/simpleObjPlacement.js'), 
         advancedObjPlacement: path.resolve(__dirname, '../src/2-advancedObjPlacement/advancedObjPlacement.js'), 
+        arExpositor: path.resolve(__dirname, '../src/3-arExpositor/arExpositor.js'), 
         prototype: path.resolve(__dirname, '../src/0-prototypes/prototype.js'),
     },
     output:
@@ -40,6 +41,12 @@ module.exports = {
             filename: 'advancedObjPlacement.html',
             template: path.resolve(__dirname, '../src/2-advancedObjPlacement/advancedObjPlacement.html'),
             chunks: ['advancedObjPlacement'],
+            minify: true
+        }),
+        new HtmlWebpackPlugin({
+            filename: 'arExpositor.html',
+            template: path.resolve(__dirname, '../src/3-arExpositor/arExpositor.html'),
+            chunks: ['arExpositor'],
             minify: true
         }),
         new HtmlWebpackPlugin({
