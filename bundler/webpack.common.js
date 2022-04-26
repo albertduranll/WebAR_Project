@@ -9,6 +9,7 @@ module.exports = {
         simpleObjPlacement: path.resolve(__dirname, '../src/1-simpleObjPlacement/simpleObjPlacement.js'), 
         advancedObjPlacement: path.resolve(__dirname, '../src/2-advancedObjPlacement/advancedObjPlacement.js'), 
         arExpositor: path.resolve(__dirname, '../src/3-arExpositor/arExpositor.js'), 
+        mesureTool: path.resolve(__dirname, '../src/4-mesureTool/mesureTool.js'), 
         prototype: path.resolve(__dirname, '../src/0-prototypes/prototype.js'),
     },
     output:
@@ -47,6 +48,12 @@ module.exports = {
             filename: 'arExpositor.html',
             template: path.resolve(__dirname, '../src/3-arExpositor/arExpositor.html'),
             chunks: ['arExpositor'],
+            minify: true
+        }),
+        new HtmlWebpackPlugin({
+            filename: 'mesureTool.html',
+            template: path.resolve(__dirname, '../src/4-mesureTool/mesureTool.html'),
+            chunks: ['mesureTool'],
             minify: true
         }),
         new HtmlWebpackPlugin({
