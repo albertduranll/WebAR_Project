@@ -1,9 +1,10 @@
 import '../style.css'
 import * as THREE from 'three'
-import { ARButton } from 'three/examples/jsm/webxr/ARButton.js'
 import { BufferGeometryUtils } from 'three/examples/jsm/utils/BufferGeometryUtils.js'; 
 
-
+/**
+ * Inicializamos la App.
+ */
 init();
 
 function init(){
@@ -13,26 +14,34 @@ function init(){
     });
 }
 
+/**
+ * Clase mediante la cual gestionaremos toda la aplicación de la herramienta de medidas con Realidad Aumentada.
+ */
 class App{
 
 	constructor(){
 		const container = document.createElement( 'div' );
 		document.body.appendChild( container );
         
+        /* CAMERA */
         this.camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 20 );
 		this.camera.position.set( 0, 1.6, 3 );
         
+        /* SCENE */
 		this.scene = new THREE.Scene();
         this.scene.background = null;
 
+        /* AMBIENT */
 		const ambient = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 2);
         ambient.position.set( 0.5, 1, 0.25 );
 		this.scene.add(ambient);
         
+        /* LIGHTS */
         const light = new THREE.DirectionalLight();
         light.position.set( 0.2, 1, 1);
         this.scene.add(light);
 			
+        /* RENDERER */
 		this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true } );
 		this.renderer.setPixelRatio( window.devicePixelRatio );
 		this.renderer.setSize( window.innerWidth, window.innerHeight );
@@ -54,6 +63,7 @@ class App{
         this.initScene();
         this.setupXR();
 
+        /* BOTÓN AR */
         let btn = document.createElement("button");
         btn.innerHTML = "START AR";
         btn.onclick = this.initAR.bind(this);
@@ -65,17 +75,28 @@ class App{
         
 	}
 	
+    /* Control de resolución de camara y renderizado. */
     resize(){ 
         this.camera.aspect = window.innerWidth / window.innerHeight;
     	this.camera.updateProjectionMatrix();
     	this.renderer.setSize( window.innerWidth, window.innerHeight );  
     }	
     
+    /**
+     * Obtención de punto central.
+     * @param points 
+     * @returns 
+     */
     getCenterPoint(points) {
         let line = new THREE.Line3(...points)
         return line.getCenter( new THREE.Vector3() );
     }
 
+    /**
+     * Inicializamos la línea a dibujar para tomar medidas.
+     * @param point 
+     * @returns 
+     */
     initLine(point) {
         const lineMaterial = new THREE.LineBasicMaterial({
             color: 0xffffff,
@@ -87,6 +108,11 @@ class App{
         return new THREE.Line(lineGeometry, lineMaterial);
     }
 
+    /**
+     * Actualización de la línea de medidas.
+     * @param  matrix 
+     * @param  line 
+     */
     updateLine(matrix, line) {
         const positions = line.geometry.attributes.position.array;
         positions[3] = matrix.elements[12]
@@ -96,6 +122,10 @@ class App{
         line.geometry.computeBoundingSphere();
     }
 
+    /**
+     * Inicializamos la retícula que nos permite indicar puntos de origen y final.
+     * @returns 
+     */
     initReticle() {
         let ring = new THREE.RingBufferGeometry(0.045, 0.05, 32).rotateX(- Math.PI / 2);
         let dot = new THREE.CircleBufferGeometry(0.005, 32).rotateX(- Math.PI / 2);
@@ -108,10 +138,21 @@ class App{
         return reticle;
     }
 
+    /**
+     * Cálculo de la distancia entre puntos.
+     * @param points 
+     * @returns 
+     */
     getDistance(points) {
         if (points.length == 2) return points[0].distanceTo(points[1]);
     }
     
+    /**
+     * Vinculamos los puntos reales con su correspondente punto en la pantalla.
+     * @param  point 
+     * @param  camera 
+     * @returns 
+     */
     toScreenPosition(point, camera){
         const width = window.innerWidth;
         const height = window.innerHeight;
@@ -128,12 +169,18 @@ class App{
 
     }
     
+    /**
+     * Inicializamos escena activando la retícula.
+     */
     initScene(){
         this.reticle = this.initReticle();
   
         this.scene.add( this.reticle );
     }
     
+    /**
+     * Seteamos la escena XR para poder tratar el contenido de Realidad Aumentada.
+     */
     setupXR(){
         this.renderer.xr.enabled = true;
         
@@ -144,6 +191,7 @@ class App{
         this.hitTestSourceRequested = false;
         this.hitTestSource = null;
         
+        //Función para recoger los datos de los puntos si la retícula esta visible.
         function onSelect() {
             if (self.reticle.visible){
                 const pt = new THREE.Vector3();
@@ -175,6 +223,9 @@ class App{
         this.scene.add( this.controller );    
     }
 
+    /**
+     * Inizializamos la session de realidad aumentada.
+     */
     initAR(){
         let currentSession = null;
         const self = this;
@@ -283,6 +334,8 @@ class App{
 
         }
         
+        //Refrescamos posición de el label de la distancia entre los puntos en función de la ubicación 
+        //la cámara.
         this.labels.forEach( label => {
             const pos = self.toScreenPosition(label.point, self.renderer.xr.getCamera(self.camera));
             label.div.style.transform = `translate(-50%, -50%) translate(${pos.x}px,${pos.y}px)`;
