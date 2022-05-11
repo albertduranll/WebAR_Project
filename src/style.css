@@ -82,7 +82,28 @@ a{
     justify-content:center;
 }
 
-/* section:nth-child(odd)
+#ar-button
 {
-    justify-content:center;
-} */
+    background-color: #c98a63; 
+    border: none;
+    color: white;
+    padding: 10px 27px;
+    text-align: center;
+    text-decoration: none;
+
+    font-size: 14px;
+    
+    position: absolute;
+    margin: 1.5%;
+    border-radius: 10px;
+
+    position: absolute; 
+    top: 1px;
+    /* right: 45%; */
+    left: 1%;
+}
+
+#ar-button:active
+{
+    background-color: #9a5e39; 
+}

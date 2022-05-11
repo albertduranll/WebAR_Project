@@ -13,7 +13,7 @@ function init(){
         const app = new App();
         window.app = app;
     });
-}
+  }
 
 /**
  * Clase mediante la cual gestionaremos toda la aplicación de la herramienta de medidas con Realidad Aumentada.
@@ -65,10 +65,11 @@ class App{
     this.setupXR();
 
     /* BOTÓN AR */
-    let btn = document.createElement("button");
-    btn.innerHTML = "START AR";
-    btn.onclick = this.initAR.bind(this);
-    container.appendChild(btn);
+    // let btn = document.createElement("button");
+    // btn.innerHTML = "START AR";
+    // btn.onclick = this.initAR.bind(this);
+    // container.appendChild(btn);
+    this.initAR();
     
     this.renderer.setAnimationLoop( this.render.bind(this) );
 		
@@ -121,11 +122,11 @@ class App{
             }
         })
 
-        self.rose = gltf.scene;
+        self.chair = gltf.scene;
         
-        // self.rose.position.set(0, -10, -10);
-        // self.rose.scale.set(.4,.4,.4);
-        self.rose.visible = false;
+        // self.chair.position.set(0, -10, -10);
+        // self.chair.scale.set(.4,.4,.4);
+        self.chair.visible = false;
 
         self.scene.add( gltf.scene );
         
@@ -192,10 +193,10 @@ class App{
         //   self.scene.add(self.currentLine);
         // }
 
-        if (self.rose===undefined) return;
+        if (self.chair===undefined) return;
 
-        self.rose.position.setFromMatrixPosition( self.reticle.matrix );
-        self.rose.visible = true;
+        self.chair.position.setFromMatrixPosition( self.reticle.matrix );
+        self.chair.visible = true;
       }
     }
 
@@ -235,9 +236,9 @@ class App{
 
         currentSession = null;
 
-        if (self.rose !== null){
-          self.scene.remove( self.rose );
-          self.rose = null;
+        if (self.chair !== null){
+          self.scene.remove( self.chair );
+          self.chair = null;
       }
         
         self.renderer.setAnimationLoop( null );
@@ -310,7 +311,7 @@ class App{
 
         if ( this.hitTestSource ) this.getHitTestResults( frame );
 
-        // self.rose.rotateY( 0.01 );
+        // self.chair.rotateY( 0.01 );
     }
 
     this.renderer.render( this.scene, this.camera );
