@@ -114,7 +114,9 @@ class App{
                 self.chair = gltf.scene;
 
                 self.chair.position.set(0, 3, 0);
+                
                 self.chair.scale.set(4,4,4);
+                self.chair.rotation.set(0,75,0);
 
                 self.scene.add( gltf.scene );
                 
@@ -168,7 +170,7 @@ class App{
 
         if (self.chair===undefined) return;
 
-        self.chair.scale.set(1.2,1.2,1.2);
+        self.chair.scale.set(1.1,1.1,1.1);
         self.chair.position.setFromMatrixPosition( self.reticle.matrix );
         self.chair.visible = true;
       }
@@ -293,8 +295,8 @@ class App{
     }
     else
     {
-        if(this.chair !== undefined)
-            this.chair.rotateY( 0.01 );
+        // if(this.chair !== undefined)
+        //     this.chair.rotateY( 0.01 );
     }
 
 
