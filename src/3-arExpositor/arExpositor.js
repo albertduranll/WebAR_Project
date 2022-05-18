@@ -170,7 +170,7 @@ class App{
 
         if (self.chair===undefined) return;
 
-        self.chair.scale.set(1.1,1.1,1.1);
+        self.chair.scale.set(1,1,1);
         self.chair.position.setFromMatrixPosition( self.reticle.matrix );
         self.chair.visible = true;
       }
