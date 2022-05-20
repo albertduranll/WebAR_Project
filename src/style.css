@@ -107,3 +107,32 @@ a{
 {
     background-color: #9a5e39; 
 }
+
+#expositorButtons
+{
+    display: flexbox;
+    position:absolute;
+    background-color: aqua;
+    padding: 3%;
+    height: 50%;
+    padding: 5% 5%;
+    margin-top: 35%;
+}
+
+#selectionButton
+{
+    display: flex;
+    align-items: center;
+    height: 20%;
+    margin-top: 15%;
+}
+
+#panelActivationButton
+{
+    position: absolute;
+    margin-top: 30%;
+    z-index: 1;
+
+    height: 5%;
+    margin-left: 3%;
+}

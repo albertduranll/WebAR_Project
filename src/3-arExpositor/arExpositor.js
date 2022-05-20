@@ -53,7 +53,9 @@ class App{
     container.appendChild( this.renderer.domElement );
 
     this.loadingBar = new LoadingBar();
-    
+    this.clock = new THREE.Clock()
+    this.oldElapsedTime = 0
+
     this.initScene();
     this.setupXR();
 
@@ -63,6 +65,22 @@ class App{
     this.btn.innerHTML = "START AR";
     this.btn.onclick = this.initAR.bind(this);
     container.appendChild(this.btn);
+
+    //Botones de seleccion de modelo 3D
+    const self = this;
+    const modelButtons = document.getElementsByName("selectionBtn");
+    modelButtons.forEach((modelButton) => {
+          modelButton.addEventListener('click', function(){
+            console.log('Seleccionado el modelo ' + modelButton.value);
+
+            if (self.danceModel !== null){
+                self.scene.remove( self.danceModel );
+                self.danceModel = null;
+            }
+            self.loadGLTF(modelButton.value);
+            self.loadingBar.visible = true;
+          });
+    });
 
     this.controls = new OrbitControls( this.camera, this.renderer.domElement );
     this.controls.target.set(0, 3.5, 0);
@@ -100,25 +118,29 @@ class App{
     /**
     * Cargamos el modelo 3D mediante formato .gltf
     */
-    loadGLTF(){
+    loadGLTF(index){
         const loader = new GLTFLoader().setPath('models/');
         const self = this;
-
+        console.log(index);
         // Load a glTF resource
         loader.load(
             // resource URL
-            'scene.glb', 
+            `dance${index}.glb`, 
             // called when the resource is loaded
             function ( gltf ) {
 
-                self.chair = gltf.scene;
+                self.danceModel = gltf.scene;
 
-                self.chair.position.set(0, 3, 0);
+                self.danceModel.position.set(0, 0, 0);
                 
-                self.chair.scale.set(4,4,4);
-                self.chair.rotation.set(0,75,0);
+                self.danceModel.scale.set(4,4,4);
+                self.danceModel.rotation.set(0,160,0);
 
                 self.scene.add( gltf.scene );
+
+                self.mixer = new THREE.AnimationMixer(gltf.scene)
+                self.action = self.mixer.clipAction(gltf.animations[0])
+                self.action.play()
                 
                 self.loadingBar.visible = false;
                 
@@ -134,6 +156,7 @@ class App{
             function ( error ) {
 
                 console.log( 'An error happened' );
+                self.loadingBar.visible = false;
 
             }  
         );
@@ -145,7 +168,8 @@ class App{
   initScene(){
     this.reticle = this.initReticle();
 
-    this.loadGLTF();
+    // this.loadGLTF();
+    this.loadingBar.visible = false;
 
     this.scene.add( this.reticle );
   }
@@ -168,11 +192,13 @@ class App{
         const pt = new THREE.Vector3();
         pt.setFromMatrixPosition(self.reticle.matrix);
 
-        if (self.chair===undefined) return;
+        if (self.danceModel===undefined) return;
 
-        self.chair.scale.set(1,1,1);
-        self.chair.position.setFromMatrixPosition( self.reticle.matrix );
-        self.chair.visible = true;
+        self.danceModel.scale.set(0.3,0.3,0.3);
+        // self.danceModel.rotation.y = Math.atan2( ( this.camera.position.x - self.danceModel.position.x ), ( this.camera.position.z - self.danceModel.position.z ) );
+        self.danceModel.rotation.set(0,0,0)
+        self.danceModel.position.setFromMatrixPosition( self.reticle.matrix );
+        self.danceModel.visible = true;
       }
     }
 
@@ -186,8 +212,12 @@ class App{
    * Inizializamos la session de realidad aumentada.
    */
   initAR(){
+    
+    
     let currentSession = null;
     const self = this;
+    
+    if(self.danceModel === undefined) return;
     
     const sessionInit = { requiredFeatures: [ 'hit-test' ],
                           optionalFeatures: [ 'dom-overlay' ], 
@@ -201,28 +231,32 @@ class App{
       self.renderer.xr.setReferenceSpaceType( 'local' );
       self.renderer.xr.setSession( session );
 
-
+      document.getElementById("panelActivationButton").style.visibility = 'hidden';
+      document.getElementById("expositorButtons").style.visibility = 'hidden';
 
       self.btn.style.visibility = 'hidden'
       self.scene.background = null;
 
-      self.chair.visible = false;
+      self.danceModel.visible = false;
   
       currentSession = session;
     }
 
     function onSessionEnded( ) {
 
-        currentSession.removeEventListener( 'end', onSessionEnded );
+      currentSession.removeEventListener( 'end', onSessionEnded );
 
-        currentSession = null;
+      currentSession = null;
 
-        if (self.chair !== null){
-          self.scene.remove( self.chair );
-          self.chair = null;
+      if (self.danceModel !== null){
+        self.scene.remove( self.danceModel );
+        self.danceModel = null;
       }
+
+      document.getElementById("panelActivationButton").style.visibility = 'visible';
+      document.getElementById("expositorButtons").style.visibility = 'visible';
         
-        self.renderer.setAnimationLoop( null );
+      self.renderer.setAnimationLoop( null );
     }
 
     if ( currentSession === null ) {
@@ -285,21 +319,24 @@ class App{
   render( timestamp, frame ) {
 
     const self = this;
-    
+    const elapsedTime = this.clock.getElapsedTime()
+    const deltaTime = elapsedTime - this.oldElapsedTime
+    this.oldElapsedTime = elapsedTime
+
     if ( frame ) {
 
         if ( this.hitTestSourceRequested === false ) this.requestHitTestSource( )
 
         if ( this.hitTestSource ) this.getHitTestResults( frame );
-
     }
     else
     {
-        // if(this.chair !== undefined)
-        //     this.chair.rotateY( 0.01 );
     }
-
-
+    if(this.danceModel !== undefined)
+    if (self.mixer !== undefined){
+      self.mixer.update(deltaTime)
+    }
+    
     this.renderer.render( this.scene, this.camera );
   }
 }
