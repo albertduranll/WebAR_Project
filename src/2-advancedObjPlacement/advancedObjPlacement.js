@@ -110,11 +110,9 @@ class App{
     // Load a glTF resource
     loader.load(
       // resource URL
-      'chair1.glb', 
+      'scene.glb', 
       // called when the resource is loaded
       function ( gltf ) {
-        // const bbox = new THREE.Box3().setFromObject( gltf.scene );
-        // console.log(`min:${bbox.min.x.toFixed(2)},${bbox.min.y.toFixed(2)},${bbox.min.z.toFixed(2)} -  max:${bbox.max.x.toFixed(2)},${bbox.max.y.toFixed(2)},${bbox.max.z.toFixed(2)}`);
         
         gltf.scene.traverse( ( child ) => {
             if (child.isMesh){
@@ -174,29 +172,11 @@ class App{
         const pt = new THREE.Vector3();
         pt.setFromMatrixPosition(self.reticle.matrix);
 
-        // self.measurements.push(pt);
-        // if (self.measurements.length == 2) {
-        //   const distance = Math.round(self.getDistance(self.measurements) * 100);
-
-        //   const text = document.createElement('div');
-        //   text.className = 'label';
-        //   text.style.color = 'rgb(255,255,255)';
-        //   text.textContent = distance + ' cm';
-        //   document.querySelector('#container').appendChild(text);
-
-        //   self.labels.push({div: text, point: self.getCenterPoint(self.measurements)});
-
-        //   self.measurements = [];
-        //   self.currentLine = null;
-        // } else {
-        //   self.currentLine = self.initLine(self.measurements[0]);
-        //   self.scene.add(self.currentLine);
-        // }
-
         if (self.chair===undefined) return;
 
         self.chair.position.setFromMatrixPosition( self.reticle.matrix );
-        self.chair.scale.set(1.1,1.1,1.1);
+        self.chair.scale.set(0.6,0.6,0.6);
+        self.chair.position.set(self.chair.position.x, self.chair.position.y + 0.6, self.chair.position.z)
         self.chair.visible = true;
       }
     }
