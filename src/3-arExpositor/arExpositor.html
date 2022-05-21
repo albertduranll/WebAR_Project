@@ -12,13 +12,47 @@
         </style>
 	</head>
 	<body>
-		<button id="panelActivationButton">X</button>
+		<button id="panelActivationButton" onclick="animatePanel()">
+			<img src="../../static/images/menu.png" width="13" height="13" alt="submit" />
+		</button>
 		<div id="expositorButtons">
-			<button id="selectionButton" name="selectionBtn" value="1">Modelo 1</button>
-			<button id="selectionButton" name="selectionBtn" value="2">Modelo 2</button>
-			<button id="selectionButton" name="selectionBtn" value="3">Modelo 3</button>
-			<button id="selectionButton" name="selectionBtn" value="4">Modelo 4</button>
+			<button id="selectionButton" name="selectionBtn" value="1">Dance 1</button>
+			<button id="selectionButton" name="selectionBtn" value="2">Dance 2</button>
+			<button id="selectionButton" name="selectionBtn" value="3">Dance 3</button>
+			<button id="selectionButton" name="selectionBtn" value="4">Dance 4</button>
 		</div>
+
+		<script>
+			let activePanel = false;
+			let pos = -225;
+			function animatePanel() {
+			  let id = null;
+			  const elem = document.getElementById("expositorButtons");   
+			  clearInterval(id);
+			  id = setInterval(frame, .5);
+			  function frame() {
+
+				if(activePanel){
+					if (pos == -225) {
+						clearInterval(id);
+						activePanel = false;
+					} else {
+						pos--; 
+						elem.style.left = pos + "px"; 
+					}
+				}
+				else{
+					if (pos == 0) {
+						clearInterval(id);
+						activePanel = true;
+					} else {
+						pos++; 
+						elem.style.left = pos + "px"; 
+					}
+				}
+			  }
+			}
+		</script>
 	</body>
 	
 </html>
