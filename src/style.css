@@ -8,6 +8,7 @@ body,
 html
 {
     /* overflow:hidden; */
+    /* background-color: #000000; */
 }
 
 .webgl
@@ -138,6 +139,40 @@ a{
     margin-left: 3%;
 }
 
+#input-text
+{
+    position: absolute;
+    top: 50%;  /* position the top  edge of the element at the middle of the parent */
+    left: 50%; /* position the left edge of the element at the middle of the parent */
+    height: 5%;
+    transform: translate(-50%, -75%); /* This is a shorthand of
+                                         translateX(-50%) and translateY(-50%) */
+}
+
+#ar-button-ARText
+{
+    background-color: #c98a63;
+    border: none;
+    color: white;
+    padding: 10px 27px;
+    text-align: center;
+    text-decoration: none;
+
+    font-size: 14px;
+
+    position: absolute;
+    top: 50%;  
+    left: 50%; 
+    height: 5%;
+    transform: translate(-50%, 500%); 
+    border-radius: 10px;
+}
+
+#ar-button-ARText:active
+{
+    background-color: #9a5e39;
+}
+
 @media only screen and (min-width:801px) {
     /* For Desktop: */
     #panelActivationButton
@@ -157,9 +192,7 @@ a{
         display: flexbox;
         position:absolute;
         background-color: rgb(255, 0, 0);
-        /* padding: 3%; */
         height: 50%;
-        /* padding: 2% 2%; */
         margin-top: 10%;
         left: -225px;
     }

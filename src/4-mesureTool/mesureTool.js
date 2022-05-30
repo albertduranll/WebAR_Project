@@ -30,16 +30,6 @@ class App{
         /* SCENE */
 		this.scene = new THREE.Scene();
         this.scene.background = null;
-
-        /* AMBIENT */
-		const ambient = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 2);
-        ambient.position.set( 0.5, 1, 0.25 );
-		this.scene.add(ambient);
-        
-        /* LIGHTS */
-        const light = new THREE.DirectionalLight();
-        light.position.set( 0.2, 1, 1);
-        this.scene.add(light);
 			
         /* RENDERER */
 		this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true } );
@@ -62,12 +52,7 @@ class App{
         
         this.initScene();
         this.setupXR();
-
-        /* BOTÓN AR */
-        let btn = document.createElement("button");
-        btn.innerHTML = "START AR";
-        btn.onclick = this.initAR.bind(this);
-        container.appendChild(btn);
+        this.initAR();
         
         this.renderer.setAnimationLoop( this.render.bind(this) );
 		
@@ -123,7 +108,7 @@ class App{
     }
 
     /**
-     * Inicializamos la retícula que nos permite indicar puntos de origen y final.
+     * Inicializamos la retícula.
      * @returns 
      */
     initReticle() {
@@ -148,7 +133,7 @@ class App{
     }
     
     /**
-     * Vinculamos los puntos reales con su correspondente punto en la pantalla.
+     * Obtenemos el punto en la pantalla en la que debemos situar los labels de medidas.
      * @param  point 
      * @param  camera 
      * @returns 
@@ -183,8 +168,6 @@ class App{
      */
     setupXR(){
         this.renderer.xr.enabled = true;
-        
-        // const btn = new ARButton( this.renderer, { sessionInit: { requiredFeatures: [ 'hit-test' ], optionalFeatures: [ 'dom-overlay' ], domOverlay: { root: document.body } } } );
         
         const self = this;
 
@@ -243,7 +226,7 @@ class App{
             self.renderer.xr.setSession( session );
 
             self.scene.background = null;
-            // self.chair.position.set(0,0,0);
+            self.btn.style.visibility = 'hidden'
        
             currentSession = session;
         }
@@ -254,10 +237,7 @@ class App{
 
             currentSession = null;
             
-            // if (self.chair !== null){
-            //     self.scene.remove( self.chair );
-            //     self.chair = null;
-            // }
+            self.btn.style.visibility = 'visible'
             
             self.renderer.setAnimationLoop( null );
         }
@@ -273,6 +253,9 @@ class App{
         }
     }
     
+    /**
+     * Solicita la información necesaria para obtener la posición en el viewer de un punto corresponiente al entorno real.
+     */
     requestHitTestSource(){
         const self = this;
         
@@ -300,6 +283,10 @@ class App{
 
     }
     
+    /**
+     * Gestión de los resultados obtenidos una vez realizado el "requestHitTestSource()".
+     * @param {*} frame 
+     */
     getHitTestResults( frame ){
         const hitTestResults = frame.getHitTestResults( this.hitTestSource );
 
@@ -317,11 +304,14 @@ class App{
         } else {
 
             this.reticle.visible = false;
-
         }
-
     }            
 
+    /**
+     * Función que gestiona el refresco de cada frame.
+     * @param {*} timestamp 
+     * @param {*} frame 
+     */
     render( timestamp, frame ) {
 
         const self = this;

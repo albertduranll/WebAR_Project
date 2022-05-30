@@ -1,6 +1,6 @@
 import '../style.css'
 import * as THREE from 'three'
-import { ARButton } from 'three/examples/jsm/webxr/ARButton.js'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import testVertexShader from '../shaders/shader1/vertex.glsl'
 import testFragmentShader from '../shaders/shader1/fragment.glsl'
 
@@ -33,13 +33,13 @@ const scene = new THREE.Scene()
 /**
  * Objects
  */
-const objectsDistance = 7
+const objectsDistance = 6
 
 //--------SIMPLE PARTICLE GEOMETRY---------//
-// simpleParticleGeometry()
+//simpleParticleGeometry()
 function simpleParticleGeometry(){
 
-    const particlesGeometry = new THREE.SphereBufferGeometry(1,32,32)
+    const particlesGeometry = new THREE.SphereBufferGeometry(1.2,64,64)
     const materialMaterial = new THREE.PointsMaterial({
         size: 0.01,
         //Controlamos el tamanyo independientemente de la distancia a la que este la camara.
@@ -47,12 +47,12 @@ function simpleParticleGeometry(){
     })
     
     const particles = new THREE.Points(particlesGeometry, materialMaterial);
-    particles.position.z = .5
+    particles.position.y = -objectsDistance * 2
+    particles.position.z = 0
     scene.add(particles)
 }
 
 //--------ADVANCED PARTICLE GEOMETRY---------//
-// advancedParticleGeometry()
 function advancedParticleGeometry(){
 
     const particleGeometry = new THREE.BufferGeometry()
@@ -68,7 +68,7 @@ function advancedParticleGeometry(){
 
         //0.5 para centrar las particulas alrededor del punto 0,0,0
         //Si lo modificamos se colocan del 0 al 1 y de este modo van de -0.5 a 0.5
-        positions[i] = (Math.random() - 0.5) * 10
+        positions[i] = (Math.random() - 0.5) * 100
     }
 
     particleGeometry.setAttribute(
@@ -78,7 +78,7 @@ function advancedParticleGeometry(){
     )
 
     const particleMaterial = new THREE.PointsMaterial({
-        size: 0.02,
+        size: 0.15,
         sizeAttenuation: true,
     })
 
@@ -114,9 +114,22 @@ const cameraGroup = new THREE.Group()
 scene.add(cameraGroup)
 
 // Base camera
-const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
-camera.position.z = 3
+const camera = new THREE.PerspectiveCamera(65, sizes.width / sizes.height, 0.1, 100)
+camera.position.x = 0
+camera.position.y = 8.8
+camera.position.z = 5
 cameraGroup.add(camera)
+
+/**
+ * Lights
+ */
+ const directionalLight = new THREE.DirectionalLight('#ffffff', 3)
+//  directionalLight.castShadow = true
+ directionalLight.shadow.camera.far = 15
+ directionalLight.shadow.mapSize.set(1024, 1024)
+ directionalLight.shadow.normalBias = 0.05
+ directionalLight.position.set(0.25, 3, - 2.25)
+ scene.add(directionalLight)
 
 
 // Renderer
@@ -140,6 +153,9 @@ window.addEventListener('scroll', () =>
     if(newSection != currentSection)
     {
         currentSection = newSection
+        
+        //Acciones según secciones
+        sectionAction(currentSection)
     }
 })
 
@@ -179,127 +195,60 @@ const loop = () =>
 loop()
 
 
+let visitedSection1 = false;
+let visitedSection2 = false;
 
-/**
- * ////////////PROTOTYPES////////////////
- */
-function sphereWithEffect(){
+simpleParticleGeometry()
+advancedParticleGeometry()
+sectionAction(0);
+function sectionAction(index){
+    console.log("Seccion " +  index)
 
-    /**
-     * Sizes
-     */
-    const sizes = {}
-    sizes.width = window.innerWidth
-    sizes.height = window.innerHeight
-    
-    window.addEventListener('resize', () =>
-    {
-        // Save sizes
-        sizes.width = window.innerWidth
-        sizes.height = window.innerHeight
-    
-        // Update camera
-        camera.aspect = sizes.width / sizes.height
-        camera.updateProjectionMatrix()
-    
-        // Update renderer
-        renderer.setSize(sizes.width, sizes.height)
-    })
-    
-    /**
-     * Environnements
-     */
-    // Scene
-    const scene = new THREE.Scene()
-    
-    // Objects
-    const objectsDistance = 7
-    
-    const cube = new THREE.Mesh(new THREE.SphereBufferGeometry(1.5,50,50, 1,100), new THREE.MeshNormalMaterial())
-    scene.add(cube)
-    
-    
-    /**
-     * Camera
-     */
-    
-    // CameraGroup
-    const cameraGroup = new THREE.Group()
-    scene.add(cameraGroup)
-    
-    // Base camera
-    const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
-    camera.position.z = 3
-    cameraGroup.add(camera)
-    
-    
-    // Renderer
-    const renderer = new THREE.WebGLRenderer({
-        canvas: document.querySelector('.webgl')
-    })
-    renderer.setPixelRatio(window.devicePixelRatio)
-    renderer.setSize(sizes.width, sizes.height)
-    
-    /**
-     * Scroll
-     */
-    let scrollY = window.scrollY
-    let currentSection = 0
-    
-    window.addEventListener('scroll', () =>
-    {
-        scrollY = window.scrollY
-        const newSection = Math.round(scrollY / sizes.height)
-    
-        if(newSection != currentSection)
-        {
-            currentSection = newSection
+    if(index === 0 && !visitedSection1){
+        
+        let meshList = []
+        const numMeshes = 6
+
+        for (let i = 0; i < numMeshes; i++) {
+           
+            //Geometry
+            var geometry = new THREE.OctahedronBufferGeometry( 2, 2 ).rotateX( - Math.PI / 2 );
+
+            //Material
+            var material = new THREE.MeshNormalMaterial({
+                flatShading: true
+            });
+
+            //Mesh
+            var mesh = new THREE.Mesh( geometry, material );
+
+            meshList.push(mesh)
         }
-    })
-    
-    /**
-     * Cursor
-     */
-    const cursor = {}
-    cursor.x = 0
-    cursor.y = 0
-    
-    window.addEventListener('mousemove', (event) =>
-    {
-        cursor.x = event.clientX / sizes.width - 0.5
-        cursor.y = event.clientY / sizes.height - 0.5
-    })
-    
-    /**
-     * Loop
-     */
-    const clock = new THREE.Clock()
-    let previousTime = 0
-    
-    const loop = () =>
-    {
-        const elapsedTime = clock.getElapsedTime()
-        const deltaTime = elapsedTime - previousTime
-        previousTime = elapsedTime
-    
-        // Animate camera
-        camera.position.y = - scrollY / sizes.height * objectsDistance
-    
-        //Efecto parallax
-        const parallaxX = cursor.x * 0.5
-        const parallaxY = - cursor.y * 0.5
-        cameraGroup.position.x += (parallaxX - cameraGroup.position.x) * 2 * deltaTime
-        cameraGroup.position.y += (parallaxY - cameraGroup.position.y) * 2 * deltaTime
-    
-        // Update
-        cube.rotation.y += 0.01
-    
-        // Render
-        renderer.render(scene, camera)
-    
-        // Keep looping
-        window.requestAnimationFrame(loop)
-    }
-    loop()
 
+        meshList[0].position.set(0, -objectsDistance * (index+1), -1.5)
+        meshList[0].scale.set(.4,.4,.4)
+
+        meshList[1].position.set(-1.5, -5, -2)
+        meshList[1].scale.set(.2,.2,.2)
+
+        meshList[2].position.set(1.5, -4.5, -1)
+        meshList[2].scale.set(.2,.2,.2)
+
+        meshList[3].position.set(-1.9, -7.3, -1)
+        meshList[3].scale.set(.2,.2,.2)
+
+        meshList[4].position.set(-0.5, -4.3, -1)
+        meshList[4].scale.set(.15,.15,.15)
+
+        meshList[5].position.set(1.5, -7.8, -1.5)
+        meshList[5].scale.set(.15,.15,.15)
+
+        scene.add( meshList[0],  meshList[1], meshList[2], meshList[3], meshList[4], meshList[5]);
+
+        visitedSection1 = true;
+    }
+    else if(index === 1 && !visitedSection2){
+
+        visitedSection2 = true;
+    }
 }

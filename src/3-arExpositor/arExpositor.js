@@ -138,6 +138,7 @@ class App{
 
                 self.scene.add( gltf.scene );
 
+                //Cargamos animación del modelo
                 self.mixer = new THREE.AnimationMixer(gltf.scene)
                 self.action = self.mixer.clipAction(gltf.animations[0])
                 self.action.play()
@@ -270,6 +271,9 @@ class App{
     }
   }
   
+  /**
+   * Solicita la información necesaria para obtener la posición en el viewer de un punto corresponiente al entorno real.
+   */
   requestHitTestSource(){
     const self = this;
     
@@ -297,6 +301,10 @@ class App{
 
   }
   
+  /**
+  * Gestión de los resultados obtenidos una vez realizado el "requestHitTestSource()".
+  * @param {*} frame 
+  */
   getHitTestResults( frame ){
     const hitTestResults = frame.getHitTestResults( this.hitTestSource );
 
@@ -316,9 +324,16 @@ class App{
 
   }            
 
+  /**
+   * Función que gestiona el refresco de cada frame.
+   * @param {*} timestamp 
+   * @param {*} frame 
+   */
   render( timestamp, frame ) {
 
     const self = this;
+
+    //Calculamos el deltaTime
     const elapsedTime = this.clock.getElapsedTime()
     const deltaTime = elapsedTime - this.oldElapsedTime
     this.oldElapsedTime = elapsedTime
@@ -329,13 +344,12 @@ class App{
 
         if ( this.hitTestSource ) this.getHitTestResults( frame );
     }
-    else
-    {
-    }
+
+    //Actualizamos la animación correspondiente.
     if(this.danceModel !== undefined)
-    if (self.mixer !== undefined){
-      self.mixer.update(deltaTime)
-    }
+      if (self.mixer !== undefined){
+        self.mixer.update(deltaTime)
+      }
     
     this.renderer.render( this.scene, this.camera );
   }
