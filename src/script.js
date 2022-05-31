@@ -1,7 +1,8 @@
 import './style.css'
 import * as THREE from 'three'
-import testVertexShader from './shaders/shader1/vertex.glsl'
-import testFragmentShader from './shaders/shader1/fragment.glsl'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js'
+import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js'
 
 /**
  * Sizes
@@ -30,12 +31,45 @@ window.addEventListener('resize', () =>
 const scene = new THREE.Scene()
 
 /**
+ * Camera
+ */
+
+// CameraGroup
+const cameraGroup = new THREE.Group()
+scene.add(cameraGroup)
+
+// Base camera
+const camera = new THREE.PerspectiveCamera(65, sizes.width / sizes.height, 0.1, 100)
+camera.position.x = 0
+camera.position.y = 8.8
+camera.position.z = 5
+cameraGroup.add(camera)
+
+/**
+ * Lights
+ */
+const directionalLight = new THREE.DirectionalLight( 0xFFFFFF, 1.8 );
+directionalLight.position.set( 5, 5, 15);
+scene.add(directionalLight);
+
+
+/**
  * Objects
  */
 const objectsDistance = 6
 
-//--------SIMPLE PARTICLE GEOMETRY---------//
-//simpleParticleGeometry()
+/**
+ * Renderer
+ */
+const renderer = new THREE.WebGLRenderer({
+    canvas: document.querySelector('.webgl')
+})
+renderer.setPixelRatio(window.devicePixelRatio)
+renderer.setSize(sizes.width, sizes.height)
+
+/**
+ * Función para crear una esfera a base de posicionar partículas
+ */
 function simpleParticleGeometry(){
 
     const particlesGeometry = new THREE.SphereBufferGeometry(1.2,64,64)
@@ -51,11 +85,14 @@ function simpleParticleGeometry(){
     scene.add(particles)
 }
 
-//--------ADVANCED PARTICLE GEOMETRY---------//
-function advancedParticleGeometry(){
+/**
+ * Creamos la galaxia que nos rodea en la escena 3D
+ */
+function galaxyParticleGeometry(){
 
     const particleGeometry = new THREE.BufferGeometry()
-    const count = 500
+    const count = 1000
+
 
     //Es una array de 1 dimensión con lo cual estara rellena de tal manera que
     //los primeros 3 valores corresponden a la x,y,z del primer punto, los tres
@@ -84,59 +121,99 @@ function advancedParticleGeometry(){
     const meshParticles = new THREE.Points(particleGeometry,particleMaterial)
     scene.add(meshParticles)
 }
+galaxyParticleGeometry()
 
-//--------SHADERS---------//
-shaderLoader()
-var meshWithShader;
-function shaderLoader(){
-
-    //MESH
-    // const geometry = new THREE.PlaneBufferGeometry(1, 1, 32, 32) 
-    const geometry = new THREE.SphereBufferGeometry(6, 32, 32)
-    const material = new THREE.ShaderMaterial({
-        vertexShader: testVertexShader,
-        fragmentShader: testFragmentShader,
-        side: THREE.DoubleSide
-    })
-    const mesh = new THREE.Mesh(geometry,material)
-    mesh.scale.set(10, 10, 10)
-    meshWithShader = mesh;
-    scene.add(mesh)
-}
 
 /**
- * Camera
+ * LOADER GLTF
  */
+function loadGLTF(modelName, initialY_Pos, offsetX, offsetY){
+    //Creamos el loader
+    const loader = new GLTFLoader().setPath('models/');
+    const self = this;  
 
-// CameraGroup
-const cameraGroup = new THREE.Group()
-scene.add(cameraGroup)
+    // Cargamos el modelo GLTF
+    loader.load(
+        // Nombre del objeto
+        modelName, 
+        // Llamada cuando el obejeto se ha creado.
+        function ( gltf ) {
+        
+        gltf.scene.visible = true;
 
-// Base camera
-const camera = new THREE.PerspectiveCamera(65, sizes.width / sizes.height, 0.1, 100)
-camera.position.x = 0
-camera.position.y = 8.8
-camera.position.z = 5
-cameraGroup.add(camera)
+        gltf.scene.position.y = initialY_Pos
+        gltf.scene.position.set(gltf.scene.position.x + offsetX, gltf.scene.position.y + offsetY, gltf.scene.position.z);
+          
+        if(modelName !== 'ruler.glb'){
+
+            gltf.scene.scale.set(1.5,1.5,1.5);
+            gltf.scene.rotation.set(0,0,0);
+        }
+        else{
+            gltf.scene.scale.set(.1,.1,.1);
+            gltf.scene.rotation.set(90,-90,45);
+        }
+        
+        scene.add( gltf.scene );
+      },
+      // Llamada cuando estamos cargando el objeto.
+      function ( xhr ) {
+
+      },
+      // Llamada cuando hay errores
+      function ( error ) {
+
+        console.log( 'An error happened' );
+
+      }  
+    );
+  }
 
 /**
- * Lights
+ * 3D Text
  */
- const directionalLight = new THREE.DirectionalLight('#ffffff', 3)
-//  directionalLight.castShadow = true
- directionalLight.shadow.camera.far = 15
- directionalLight.shadow.mapSize.set(1024, 1024)
- directionalLight.shadow.normalBias = 0.05
- directionalLight.position.set(0.25, 3, - 2.25)
- scene.add(directionalLight)
+ const fontLoader = new FontLoader()
 
+ loadFont(fontLoader, "    WebAR\nExperiments", .35)
 
-// Renderer
-const renderer = new THREE.WebGLRenderer({
-    canvas: document.querySelector('.webgl')
-})
-renderer.setPixelRatio(window.devicePixelRatio)
-renderer.setSize(sizes.width, sizes.height)
+ // Función para crear el texto3D
+ function loadFont(fontloader, newinput, size){
+    fontloader.load(
+      '/fonts/helvetiker_regular.typeface.json',
+      (font) =>
+      {
+          // Text
+          const textGeometry = new TextGeometry(
+            newinput,
+              {
+                  font: font,
+                  size: size,
+                  height: 0.1,
+                  curveSegments: 8,
+                  bevelEnabled: true,
+                  bevelThickness: 0.03,
+                  bevelSize: 0.015,
+                  bevelOffset: 0,
+                  bevelSegments: 5
+              }
+          )
+          textGeometry.center()
+
+          var material = new THREE.MeshNormalMaterial({
+            flatShading: true,
+            });
+
+          const text = new THREE.Mesh(textGeometry, material)
+
+          if(newinput === "(_____)")
+            text.position.y = (-objectsDistance * 5) - 0.15
+          else
+            text.position.y = (-objectsDistance * 0)
+
+           scene.add(text)
+      }
+  )
+  }
 
 /**
  * Scroll
@@ -146,6 +223,7 @@ let currentSection = 0
 
 window.addEventListener('scroll', () =>
 {
+    //Utilizamos el scroll para detectar las secciones de la página.
     scrollY = window.scrollY
     const newSection = Math.round(scrollY / sizes.height)
 
@@ -171,38 +249,21 @@ window.addEventListener('mousemove', (event) =>
     cursor.y = event.clientY / sizes.height - 0.5
 })
 
-/**
- * Loop
- */
-
-const loop = () =>
-{ 
-    // Animate camera
-    camera.position.y = - scrollY / sizes.height * objectsDistance
-
-    // Update
-    meshWithShader.rotation.y += 0.003
-    // particles.rotation.y += 0.01
-    // particles.rotation.z += 0.01
-
-    // Render
-    renderer.render(scene, camera)
-
-    // Keep looping
-    window.requestAnimationFrame(loop)
-}
-loop()
-
 
 let visitedSection1 = false;
 let visitedSection2 = false;
-
-simpleParticleGeometry()
-advancedParticleGeometry()
+let visitedSection3 = false;
+let visitedSection4 = false;
+let visitedSection5 = false;
 
 sectionAction(0);
+
+/**
+ * Acciones a realizar según la sección en la que estemos.
+ * @param {*} index 
+ */
 function sectionAction(index){
-    console.log("Seccion " +  index)
+    // console.log("Seccion " +  index)
 
     if(index === 0 && !visitedSection1){
         
@@ -249,6 +310,50 @@ function sectionAction(index){
     }
     else if(index === 1 && !visitedSection2){
 
+        simpleParticleGeometry()
         visitedSection2 = true;
     }
+    else if(index === 2 && !visitedSection3){
+
+        loadGLTF(
+            "dance1.glb", 
+            -objectsDistance * 3, 
+            0, -1.2)
+        loadGLTF(
+            "dance2.glb", 
+            -objectsDistance * 3,
+            -1.2, -1.2)
+        loadGLTF(
+            "dance3.glb", 
+            -objectsDistance * 3, 
+            1.2, -1.2)
+        visitedSection3 = true;
+    }
+    else if(index === 3 && !visitedSection4){
+        
+        loadGLTF(
+            "ruler.glb", 
+            -objectsDistance * 4, 
+            0, 0)
+
+        loadFont(fontLoader, "(_____)", .5)
+        visitedSection4 = true;
+    }
 }
+
+/**
+ * Loop
+ */
+
+ const loop = () =>
+ { 
+     // Animate camera
+     camera.position.y = - scrollY / sizes.height * objectsDistance
+ 
+     // Render
+     renderer.render(scene, camera)
+ 
+     // Keep looping
+     window.requestAnimationFrame(loop)
+ }
+ loop()
