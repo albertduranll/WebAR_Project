@@ -3,6 +3,7 @@ import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js'
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js'
+import typefaceFont from 'three/examples/fonts/helvetiker_regular.typeface.json'
 
 /**
  * Sizes
@@ -179,7 +180,7 @@ function loadGLTF(modelName, initialY_Pos, offsetX, offsetY){
  // Función para crear el texto3D
  function loadFont(fontloader, newinput, size){
     fontloader.load(
-      '/fonts/helvetiker_regular.typeface.json',
+        typefaceFont,
       (font) =>
       {
           // Text
@@ -211,6 +212,7 @@ function loadGLTF(modelName, initialY_Pos, offsetX, offsetY){
             text.position.y = (-objectsDistance * 0)
 
            scene.add(text)
+           console.log(text)
       }
   )
   }
